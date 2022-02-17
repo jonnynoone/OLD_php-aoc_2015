@@ -10,59 +10,47 @@ function getInput($filename) {
     return $data;
 }
 
-$input = getInput('./input.txt');
-
-$houses_visited = 1;
-$location = ['x' => 0, 'y' => 0];
-
-$houses = array($location);
-
-function checkLocation() {
+function processLocation() {
     global $location;
     global $houses;
+    global $houses_visited;
+    $visited = false;
 
     foreach ($houses as $house) {
         if ($location === $house) {
-            return true;
+            $visited = true;
         }
     }
+
+    if (!$visited) {
+        array_push($houses, $location);
+        $houses_visited++;
+    }
 }
+
+$input = getInput('./input.txt');
+
+$location = ['x' => 0, 'y' => 0];
+$houses = array($location);
+$houses_visited = 1;
 
 for ($i = 0; $i < strlen($input); $i++) {
     switch ($input[$i]) {
         case '^':
             $location['y']++;
-            $visited = checkLocation(); 
-            if (!$visited) {
-                array_push($houses, $location);
-                $houses_visited++;
-            }
             break;
         case '>':
             $location['x']++;
-            $visited = checkLocation(); 
-            if (!$visited) {
-                array_push($houses, $location);
-                $houses_visited++;
-            }
             break;
         case 'v':
             $location['y']--;
-            $visited = checkLocation(); 
-            if (!$visited) {
-                array_push($houses, $location);
-                $houses_visited++;
-            }
             break;
         case '<':
             $location['x']--;
-            $visited = checkLocation(); 
-            if (!$visited) {
-                array_push($houses, $location);
-                $houses_visited++;
-            }
             break;
     }
+
+    processLocation();
 }
 
 echo "Houses visited: ${houses_visited}";
